@@ -5,7 +5,7 @@ import os
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import quote_plus, urlparse
 
 BASE_DIR = Path(__file__).parent
 
@@ -76,7 +76,7 @@ class SelectionAssistantHandler(SimpleHTTPRequestHandler):
                 "source": text,
                 "title": f"AI 搜索：{text}",
                 "summary": "点击下方链接可在 AI 搜索工具中继续深度检索。",
-                "url": f"{ai_url}{text.replace(' ', '+')}",
+                "url": f"{ai_url}{quote_plus(text)}",
             }
 
         self.send_json(response, HTTPStatus.OK)
