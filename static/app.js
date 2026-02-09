@@ -7,11 +7,11 @@ function hidePopover() {
 }
 
 function showPopover(rect) {
-  const top = window.scrollY + rect.top - 50;
+  popover.classList.remove("hidden");
+  const top = window.scrollY + rect.top - popover.offsetHeight - 12;
   const left = window.scrollX + rect.left + rect.width / 2 - popover.offsetWidth / 2;
   popover.style.top = `${Math.max(top, 8)}px`;
   popover.style.left = `${Math.max(left, 8)}px`;
-  popover.classList.remove("hidden");
 }
 
 async function callApi(path, text) {
