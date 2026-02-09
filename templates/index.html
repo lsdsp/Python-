@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python 划词助手</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>划词助手 Demo</h1>
+      <p class="hint">在下面文本中选中任意词语，浮层会出现在选中文本上方。</p>
+
+      <article class="content" id="content">
+        Python is a powerful and readable programming language. You can select words like
+        hello, world, assistant, or any custom phrase to see translation, explanation,
+        AI search, and copy actions.
+      </article>
+
+      <section class="result" id="result">
+        <h2>结果面板</h2>
+        <pre id="resultText">请先选中文本并点击功能按钮。</pre>
+      </section>
+    </main>
+
+    <div class="selection-popover hidden" id="selectionPopover">
+      <button data-action="translate">翻译</button>
+      <button data-action="explain">解释</button>
+      <button data-action="search">搜索</button>
+      <button data-action="copy">复制</button>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
