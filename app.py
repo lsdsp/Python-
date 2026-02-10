@@ -8,6 +8,8 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 BASE_DIR = Path(__file__).parent
+STATIC_DIR = BASE_DIR / "static"
+INDEX_FILE = BASE_DIR / "templates" / "index.html"
 
 TRANSLATION_MAP = {
     "hello": "你好",
@@ -30,13 +32,40 @@ def normalize_text(text: str) -> str:
 
 class SelectionAssistantHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=str(BASE_DIR), **kwargs)
+        super().__init__(*args, directory=str(STATIC_DIR), **kwargs)
 
     def do_GET(self):
         parsed = urlparse(self.path)
-        if parsed.path == "/":
-            self.path = "/templates/index.html"
-        return super().do_GET()
+        if parsed.path in {"/", "/index.html"}:
+            self.serve_index()
+            return
+
+        if parsed.path.startswith("/static/"):
+            self.path = "/" + parsed.path.removeprefix("/static/")
+            return super().do_GET()
+
+        self.send_error(HTTPStatus.NOT_FOUND, "Not Found")
+
+    def list_directory(self, path):
+        self.send_error(HTTPStatus.FORBIDDEN, "Directory listing is disabled")
+        return None
+
+    def serve_index(self):
+        if not INDEX_FILE.is_file():
+            self.send_error(HTTPStatus.NOT_FOUND, "Not Found")
+            return
+
+        try:
+            data = INDEX_FILE.read_bytes()
+        except OSError:
+            self.send_error(HTTPStatus.INTERNAL_SERVER_ERROR, "Internal Server Error")
+            return
+
+        self.send_response(HTTPStatus.OK)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
 
     def do_POST(self):
         parsed = urlparse(self.path)
