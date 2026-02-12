@@ -1,1 +1,2 @@
-# No external dependencies required.
+pystray==0.19.5
+Pillow==10.4.0
