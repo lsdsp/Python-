@@ -77,7 +77,12 @@ def post_json(url: str, payload: object, headers: dict[str, str], timeout: int =
     try:
         with request.urlopen(req, timeout=timeout) as resp:
             data = resp.read().decode("utf-8")
-            return json.loads(data)
+            try:
+                return json.loads(data)
+            except json.JSONDecodeError as exc:
+                preview = data.strip().replace("\n", " ")[:200]
+                status = getattr(resp, "status", "unknown")
+                raise RuntimeError(f"HTTP {status}: invalid json response: {preview}") from exc
     except error.HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="ignore")
         raise RuntimeError(f"HTTP {exc.code}: {detail or exc.reason}") from exc
